@@ -1,11 +1,15 @@
 # ☁️ ClawCloud Auto-Login / 自动保活
 
-此工作流旨在实现 **每 15 天自动登录一次 ClawCloud (爪云)** 以保持账号活跃。
+此工作流旨在实现 **每天自动登录一次 ClawCloud (爪云)** 以保持账号活跃，没有webhook通知
 
-为了确保自动化脚本顺利运行，**必须**满足以下两个前置条件：
-1. ❌ **关闭 Passkey (通行密钥)**：避免脚本无法处理生物识别弹窗。
-2. ✅ **开启 2FA (双重验证)**：配合脚本中的 PyOTP 自动生成验证码，绕过异地登录风控。
+修改[workflows](.github/workflows/clawcloud-login.yml)配置可以更改为更短或更长的时间
 
+本脚本访问的域名为`https://ap-northeast-1.run.claw.cloud/`
+
+为了确保自动化脚本顺利运行，**必须**满足以下条件：
+1. ✅ **开启 2FA (双重验证)**：配合脚本中的 PyOTP 自动生成验证码，绕过异地登录风控。
+2. ✅ **必须 Authenticator app 优先**：即使用2fa管理器获得一次性密码OTP的方式优先，强烈推荐[2fa浏览器插件](https://github.com/Authenticator-Extension/Authenticator)，不需要打开app，且能用密钥重现二维码
+3. ❌ **可以不关闭 Passkey (通行密钥)**：但如果在workflows日志里有异常,可以移除Passkey 避免脚本无法处理生物识别弹窗。
 ---
 
 ## 🛠️ 配置步骤
@@ -22,8 +26,11 @@
 4. 选择 **Set up using an app**。
 5. **⚠️ 关键步骤**：
    > 页面显示二维码时，**不要直接点击 Continue**。请点击二维码下方的蓝色小字 **"Setup Key"**（或 "enter this text code"）。
+   >
+   > 备注：该二维码使用非2fa客户端扫描也可以出现otp密钥 形如`otpauth://totp/GitHub:user?secret=NIHVNX********G&issuer=GitHub`
 6. **复制显示的字符串密钥**（通常是 16 位字母数字组合）。
    * *注意：同时也请用手机验证器 App (如 Google Auth) 扫描二维码或输入密钥，以完成 GitHub 的验证流程。*
+7. 再次强烈推荐[2fa浏览器插件](https://github.com/Authenticator-Extension/Authenticator)，不需要打开app，具备`自动填充`和域名匹配只显示当前站点的`智能过滤`
 
 ### 第三步：配置 GitHub Secrets
 为了保护您的账号安全，请将敏感信息存储在仓库的 Secrets 中。
@@ -54,4 +61,4 @@
 4. 等待运行完成，查看日志确保显示 `🎉 登录成功`。
 
 ---
-**✅ 完成！之后脚本将每隔 15 天自动执行一次保活任务。**
+**✅ 完成！之后脚本将每隔 1 天自动执行一次保活任务。**
